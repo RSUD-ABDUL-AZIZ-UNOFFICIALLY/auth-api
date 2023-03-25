@@ -48,6 +48,12 @@ module.exports = {
       access: 'staff',
       createdAt: new Date(),
       updatedAt: new Date()
+    },
+    {
+      id: 7,
+      access: 'server',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ], {});
   },
