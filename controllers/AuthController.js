@@ -56,7 +56,6 @@ module.exports = {
       const gid = uuid.v4();
       const pic = await urlwa(`0${nohp}`);
       // get data pic
-      console.log(JSON.parse(pic).data);
       const newUser = await User.create({
         gid: gid,
         username: username,
@@ -64,7 +63,7 @@ module.exports = {
         fullname: fullname,
         email: email,
         password: hashPassword,
-        pic: JSON.parse(pic).data,
+        pic: JSON.parse(pic).data.profilePic,
       });
 
       lvid.forEach((element) => {
@@ -121,6 +120,10 @@ module.exports = {
       if (req.headers["x-real-ip"] == undefined) {
         req.headers["x-real-ip"] = req.connection.remoteAddress;
       }
+     //console .length access token
+        console.log(accesstoken.length);
+        console.log(refreshToken.length);
+
       await Session.create({
         name: user.gid,
         status: "login",
