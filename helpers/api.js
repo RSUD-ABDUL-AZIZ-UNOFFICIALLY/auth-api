@@ -27,18 +27,14 @@ const seedwa = async function (telp, message) {
   return JSON.stringify(response.data);
 };
 const urlwa = async function (telp) {
-  var data = JSON.stringify({
-    telp: telp,
-  });
   let token = jwt.sign(payload, secretKey, { expiresIn: 60 });
   var config = {
     method: "get",
-    url: `${baseURL}/api/wa/getProfilePic`,
+    url: `${baseURL}/api/wa/getprofilepic?telp=${telp}`,
     headers: {
       "Content-Type": "application/json",
       "authorization": "Bearer " + token,
-    },
-    data: data,
+    }
   };
 
   let response = await axios(config);
