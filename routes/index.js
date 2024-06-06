@@ -11,7 +11,7 @@ routes.get('/', base.home);
 routes.post('/auth/register', auth.register);
 routes.post('/auth/login', auth.login);
 routes.put('/auth/refresh', auth.refresh);
-routes.post('/auth/token', auth.token);
+routes.post('/auxth/token', auth.token);
 routes.get('/auth/level', auth.level);
 routes.put('/auth/forgot', auth.forgot);
 // routes.post('/auth/logout', auth.logout);

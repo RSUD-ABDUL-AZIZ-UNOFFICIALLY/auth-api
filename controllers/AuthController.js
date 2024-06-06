@@ -25,7 +25,6 @@ module.exports = {
           [Op.or]: [{ email: email }, { username: username }, { nohp: nohp }],
         },
       });
-      console.log(isExist);
       if (isExist) {
         return res.status(400).json({
           status: false,
@@ -33,28 +32,33 @@ module.exports = {
           data: null,
         });
       }
-      const cekToken = await Token.findOne({
-        where: { [Op.and]: [{ telp: nohp }, { token: token }] },
-      });
-      if (!cekToken) {
-        return res.status(400).json({
-          status: false,
-          message: "token not found",
-          data: null,
+      const waOTP = process.env.WhataAppOTP || false;
+      const pic = ''
+      if (waOTP) {
+        const cekToken = await Token.findOne({
+          where: { [Op.and]: [{ telp: nohp }, { token: token }] },
         });
-      }
-      const isExpired = cekToken.exp < new Date();
-      if (isExpired) {
-        return res.status(400).json({
-          status: false,
-          message: "token expired",
-          data: null,
-        });
-      }
-      // console.log(lvid.length)
+        if (!cekToken) {
+          return res.status(400).json({
+            status: false,
+            message: "token not found",
+            data: null,
+          });
+        }
+        const isExpired = cekToken.exp < new Date();
+        if (isExpired) {
+          return res.status(400).json({
+            status: false,
+            message: "token expired",
+            data: null,
+          });
+        }
+        // console.log(lvid.length)
+        let getpic = await urlwa(`0${nohp}`);
+        pic = JSON.parse(getpic).data.profilePic
+      } 
       const hashPassword = await bcrypt.hash(password, 10);
       const gid = uuid.v4();
-      const pic = await urlwa(`0${nohp}`);
       // get data pic
       const newUser = await User.create({
         gid: gid,
@@ -63,7 +67,7 @@ module.exports = {
         fullname: fullname,
         email: email,
         password: hashPassword,
-        pic: JSON.parse(pic).data.profilePic,
+        pic: pic
       });
 
       lvid.forEach((element) => {
@@ -96,7 +100,6 @@ module.exports = {
   login: async (req, res) => {
     try {
       const user = await User.authenticate(req.body);
-      // console.log(user);
       const refreshToken = user.generateRefreshToken();
       const users = await User.findAll({
         where: { gid: user.gid },
@@ -120,7 +123,6 @@ module.exports = {
       if (req.headers["x-real-ip"] == undefined) {
         req.headers["x-real-ip"] = req.connection.remoteAddress;
       }
-     //console .length access token
         console.log(accesstoken.length);
         console.log(refreshToken.length);
 
@@ -146,7 +148,6 @@ module.exports = {
         },
       });
     } catch (err) {
-      // console.log(err);
       res.status(400).json({
         status: false,
         message: err.message,
